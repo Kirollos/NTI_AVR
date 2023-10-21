@@ -99,28 +99,28 @@ u8 __DIO_u8GetPinValue(_GPIO* port, u8 Copy_u8PinId)
 	switch(Copy_u8PinId)
 	{
 		case 0:
-		ret = port->PORT.Bit.B0;
+		ret = port->PIN.Bit.B0;
 		break;
 		case 1:
-		ret = port->PORT.Bit.B1;
+		ret = port->PIN.Bit.B1;
 		break;
 		case 2:
-		ret = port->PORT.Bit.B2;
+		ret = port->PIN.Bit.B2;
 		break;
 		case 3:
-		ret = port->PORT.Bit.B3;
+		ret = port->PIN.Bit.B3;
 		break;
 		case 4:
-		ret = port->PORT.Bit.B4;
+		ret = port->PIN.Bit.B4;
 		break;
 		case 5:
-		ret = port->PORT.Bit.B5;
+		ret = port->PIN.Bit.B5;
 		break;
 		case 6:
-		ret = port->PORT.Bit.B6;
+		ret = port->PIN.Bit.B6;
 		break;
 		case 7:
-		ret = port->PORT.Bit.B7;
+		ret = port->PIN.Bit.B7;
 		break;
 	}
 	return ret;
@@ -138,5 +138,5 @@ void __DIO_voidSetPortValue(_GPIO* port, u8 Copy_u8Value)
 
 u8 __DIO_u8GetPortValue(_GPIO* port)
 {
-	return port->PORT.Byte;
+	return port->PIN.Byte;
 }
