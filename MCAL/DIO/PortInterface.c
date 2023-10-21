@@ -5,6 +5,7 @@
  *  Author: Kirollos
  */ 
 
+#include "STD_TYPES.h"
 #include "PortStruct.h"
 #include "PortInterface.h"
 

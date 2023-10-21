@@ -8,8 +8,6 @@
 #ifndef __PORTSTRUCT_H__
 #define __PORTSTRUCT_H__
 
-typedef unsigned char u8;
-
 typedef struct
 {
 	union __GPIOREG

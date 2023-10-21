@@ -9,7 +9,7 @@
 #ifndef PORTINTERFACE_H_
 #define PORTINTERFACE_H_
 
-typedef unsigned char u8;
+#include "STD_TYPES.h"
 
 typedef enum
 {

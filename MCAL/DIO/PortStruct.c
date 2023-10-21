@@ -5,6 +5,7 @@
  *  Author: Kirollos
  */ 
 
+#include "STD_TYPES.h"
 #include "PortStruct.h"
 
 _GPIO* GPIO_PortA = (_GPIO*) 0x39;
