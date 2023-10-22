@@ -9,7 +9,7 @@
 #ifndef KEYPAD_H_
 #define KEYPAD_H_
 
-#include "STD_TYPES.h"
+#include "../STD_TYPES.h"
 
 void Keypad_Init();
 u8 Keypad_GetKey();

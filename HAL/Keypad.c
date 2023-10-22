@@ -5,10 +5,10 @@
  *  Author: Kirollos
  */ 
 
-#include "STD_TYPES.h"
+#include "../STD_TYPES.h"
 #include "Keypad_config.h"
 #include "Keypad.h"
-#include "PortInterface.h"
+#include "../MCAL/PortInterface.h"
 #define F_CPU 16000000  // temp
 #include <util/delay.h> // temp
 
@@ -59,10 +59,10 @@ void Keypad_Init()
 	DIO_voidSetPinValue(KEYPAD_ROW3_PORT, KEYPAD_ROW3_PIN, 1);
 	DIO_voidSetPinValue(KEYPAD_ROW4_PORT, KEYPAD_ROW4_PIN, 1);
 	// Set columns initial values
-	DIO_voidSetPinValue(KEYPAD_COL1_PORT, KEYPAD_COL1_PIN, 1);
-	DIO_voidSetPinValue(KEYPAD_COL2_PORT, KEYPAD_COL2_PIN, 1);
-	DIO_voidSetPinValue(KEYPAD_COL3_PORT, KEYPAD_COL3_PIN, 1);
-	DIO_voidSetPinValue(KEYPAD_COL4_PORT, KEYPAD_COL4_PIN, 1);
+	DIO_voidSetPinValue(KEYPAD_COL1_PORT, KEYPAD_COL1_PIN, 0);
+	DIO_voidSetPinValue(KEYPAD_COL2_PORT, KEYPAD_COL2_PIN, 0);
+	DIO_voidSetPinValue(KEYPAD_COL3_PORT, KEYPAD_COL3_PIN, 0);
+	DIO_voidSetPinValue(KEYPAD_COL4_PORT, KEYPAD_COL4_PIN, 0);
 }
 
 u8 Keypad_GetKey()
@@ -81,7 +81,7 @@ u8 Keypad_GetKey()
 			if(pin == 0)
 			{
 				val = matrix[i][j];
-				break;
+				return val;
 			}
 			_delay_ms(20);
 		}
