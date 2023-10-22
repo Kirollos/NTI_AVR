@@ -8,7 +8,7 @@
 #ifndef SEVSEG_H_
 #define SEVSEG_H_
 
-#include "STD_TYPES.h"
+#include "../STD_TYPES.h"
 
 void SevSeg_Init();
 void SevSeg_Display(u8 number);

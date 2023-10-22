@@ -5,10 +5,10 @@
  *  Author: Kirollos
  */ 
 
-#include "STD_TYPES.h"
+#include "../STD_TYPES.h"
 #include "7SEG_CONFIG.h"
 #include "7SEG.h"
-#include "PortInterface.h"
+#include "../MCAL/PortInterface.h"
 
 
 void SevSeg_Init()
