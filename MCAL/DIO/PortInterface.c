@@ -5,14 +5,16 @@
  *  Author: Kirollos
  */ 
 
-#include "STD_TYPES.h"
+#include "../STD_TYPES.h"
 #include "PortStruct.h"
 #include "PortInterface.h"
 
+/*
 extern _GPIO* GPIO_PortA;
 extern _GPIO* GPIO_PortB;
 extern _GPIO* GPIO_PortC;
 extern _GPIO* GPIO_PortD;
+*/
 
 void DIO_voidSetPinDirection(PortType port, u8 Copy_u8PinId, u8 Copy_u8Direction)
 {

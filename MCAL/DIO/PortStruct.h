@@ -8,6 +8,11 @@
 #ifndef __PORTSTRUCT_H__
 #define __PORTSTRUCT_H__
 
+#define GPIO_PortA ((_GPIO*) 0x39);
+#define GPIO_PortB ((_GPIO*) 0x36);
+#define GPIO_PortC ((_GPIO*) 0x33);
+#define GPIO_PortD ((_GPIO*) 0x30);
+
 typedef struct
 {
 	union __GPIOREG

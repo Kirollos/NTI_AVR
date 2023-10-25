@@ -5,14 +5,15 @@
  *  Author: Kirollos
  */ 
 
-#include "STD_TYPES.h"
+#include "../STD_TYPES.h"
 #include "PortStruct.h"
 
+/*
 _GPIO* GPIO_PortA = (_GPIO*) 0x39;
 _GPIO* GPIO_PortB = (_GPIO*) 0x36;
 _GPIO* GPIO_PortC = (_GPIO*) 0x33;
 _GPIO* GPIO_PortD = (_GPIO*) 0x30;
-
+*/
 
 void __DIO_voidSetPinDirection(_GPIO* port, u8 Copy_u8PinId, u8 Copy_u8Direction)
 {
