@@ -28,7 +28,7 @@ static void H_LCD_void_latchByte(u8 copy_u8Byte)
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 1);
 	_delay_ms(1);
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 0);
-	_delay_ms(30);
+	_delay_ms(10);
 	// lower 4 bits
 	DIO_voidSetPinValue(LCD_DATA_PORT, LCD_DATA_D7, GET_BIT(copy_u8Byte, 3));
 	DIO_voidSetPinValue(LCD_DATA_PORT, LCD_DATA_D6, GET_BIT(copy_u8Byte, 2));
@@ -38,7 +38,7 @@ static void H_LCD_void_latchByte(u8 copy_u8Byte)
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 1);
 	_delay_ms(1);
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 0);
-	_delay_ms(30);
+	_delay_ms(10);
 	#elif LCD_MODE == __8_BIT_MODE
 	DIO_voidSetPortValue(LCD_DATA_PORT, copy_u8Byte);
 	_delay_ms(1);
@@ -129,23 +129,37 @@ void H_LCD_void_sendIntNum(s32 copy_s32Num)
 	H_LCD_void_sendString(szNumber);
 }
 
+void H_LCD_void_sendDouble(double copy_doubleNum)
+{
+	u8 szNumber[10];
+	sprintf(szNumber, "%.2f", copy_doubleNum);
+	H_LCD_void_sendString(szNumber);
+}
+
 void H_LCD_void_gotoXY(u8 copy_u8Row,u8 copy_u8Col)
 {
 	// x ranges from 0 to LCD_COLUMNS
 	// y ranges from 0 to LCD_ROWS
-	#if LCD_LINES == 2
-	static u8 addresses[LCD_ROWS][LCD_COLUMNS] =
-	{
-		{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13},
-		{0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53},
-		{0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27},
-		{0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x5B, 0x5C, 0x5D, 0x5E, 0x5F, 0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67}
-	};
+	//#if LCD_LINES == 2
 	// Set DDRAM
-	H_LCD_void_sendCommand(LCD_SET_DDRAM_ADDR | addresses[copy_u8Row][copy_u8Col]);
-	#else
-	H_LCD_void_sendCommand(LCD_SET_DDRAM_ADDR | (20*copy_u8Row + copy_u8Col));
-	#endif
+	switch(copy_u8Row)
+	{
+		case 0:
+		H_LCD_void_sendCommand(LCD_SET_DDRAM_ADDR | (0x00 +copy_u8Col));
+		break;
+		case 1:
+		H_LCD_void_sendCommand(LCD_SET_DDRAM_ADDR | (0x40 +copy_u8Col));
+		break;
+		case 2:
+		H_LCD_void_sendCommand(LCD_SET_DDRAM_ADDR | (0x14 +copy_u8Col));
+		break;
+		case 3:
+		H_LCD_void_sendCommand(LCD_SET_DDRAM_ADDR | (0x54 +copy_u8Col));
+		break;
+	}
+//	#else
+//	H_LCD_void_sendCommand(LCD_SET_DDRAM_ADDR | (20*copy_u8Row + copy_u8Col));
+//	#endif
 }
 
 void H_LCD_void_creatCustomChar(const u8 * ArrPattern,u8 copy_u8charCode)

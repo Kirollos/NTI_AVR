@@ -26,17 +26,6 @@
 #define LCD_DATA_D6		2
 #define LCD_DATA_D7		4
 
-#define __4_BIT_MODE	0
-#define __8_BIT_MODE	1
-#define __1_LINES		0
-#define __2_LINES		1
-#define __FONT_5x7		0
-#define __FONT_5x10		1
-#define __MODE_INC		1
-#define __MODE_DEC		0
-#define __DISP_SHIFT_OFF 0
-#define __DISP_SHIFT_ON  1
-
 #define LCD_MODE		__4_BIT_MODE
 #define LCD_LINES		__2_LINES
 #define LCD_FONT		__FONT_5x10

@@ -30,5 +30,16 @@
 #endif
 #define LCD_COLUMNS		20
 
+#define __4_BIT_MODE	0
+#define __8_BIT_MODE	1
+#define __1_LINES		0
+#define __2_LINES		1
+#define __FONT_5x7		0
+#define __FONT_5x10		1
+#define __MODE_INC		1
+#define __MODE_DEC		0
+#define __DISP_SHIFT_OFF 0
+#define __DISP_SHIFT_ON  1
+
 
 #endif /* LCD_PRIVATE_H_ */
