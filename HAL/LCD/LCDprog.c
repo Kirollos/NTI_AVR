@@ -20,6 +20,7 @@ static void H_LCD_void_latchByte(u8 copy_u8Byte)
 {
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 0);
 	_delay_ms(1);
+	
 	#if LCD_MODE == __4_BIT_MODE
 	// higher 4 bits
 	DIO_voidSetPinValue(LCD_DATA_PORT, LCD_DATA_D7, GET_BIT(copy_u8Byte, 7));
@@ -41,6 +42,8 @@ static void H_LCD_void_latchByte(u8 copy_u8Byte)
 	_delay_ms(1);
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 0);
 	_delay_ms(5);
+	
+	
 	#elif LCD_MODE == __8_BIT_MODE
 	DIO_voidSetPortValue(LCD_DATA_PORT, copy_u8Byte);
 	_delay_ms(1);
@@ -205,4 +208,12 @@ void H_LCD_void_clearScreen(void)
 	_delay_ms(2);
 	H_LCD_void_sendCommand(0x80);
 	r = c = 0;
+}
+
+void H_LCD_void_clearLine(u8 copy_u8Row)
+{
+	H_LCD_void_gotoXY(copy_u8Row, 0);
+	for(u8 i = 0; i < 20; i++)
+		H_LCD_void_sendData(' ');
+	H_LCD_void_gotoXY(copy_u8Row, 0);
 }

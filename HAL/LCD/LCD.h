@@ -22,6 +22,7 @@ void H_LCD_void_getXY(u8* pRow, u8* pCol);
 void H_LCD_void_creatCustomChar(const u8 * ArrPattern,u8 copy_u8charCode);
 void H_LCD_void_displayCustomChar(u8 copy_u8charCode);
 void H_LCD_void_clearScreen(void);
+void H_LCD_void_clearLine(u8 copy_u8Row);
 
 
 
