@@ -33,12 +33,14 @@ static u8 col_arr[][2] = {
 	{KEYPAD_COL4_PORT,KEYPAD_COL4_PIN}
 };
 
-static u8 matrix[4][4] = {
-	{1,2,3,4},
-	{5,6,7,8},
-	{9,10,11,12},
-	{13,14,15,16},
+static u8 matrix[KEYPAD_ROWS][KEYPAD_COLUMNS] = {
+	{KEYPAD_R1C1,KEYPAD_R1C2,KEYPAD_R1C3,KEYPAD_R1C4},
+	{KEYPAD_R2C1,KEYPAD_R2C2,KEYPAD_R2C3,KEYPAD_R2C4},
+	{KEYPAD_R3C1,KEYPAD_R3C2,KEYPAD_R3C3,KEYPAD_R3C4},
+	{KEYPAD_R4C1,KEYPAD_R4C2,KEYPAD_R4C3,KEYPAD_R4C4},
 };
+
+static u8 keyPressed = 0;
 
 void Keypad_Init()
 {
@@ -74,21 +76,25 @@ u8 Keypad_GetKey()
 		DIO_voidSetPinValue(first_it[(i+1)%4][0], first_it[(i+1)%4][1], 1);
 		DIO_voidSetPinValue(first_it[(i+2)%4][0], first_it[(i+2)%4][1], 1);
 		DIO_voidSetPinValue(first_it[(i+3)%4][0], first_it[(i+3)%4][1], 1);
-		_delay_ms(50); // wait to scan
+		_delay_ms(20); // wait to scan
 		for(u8 j = 0; j < 4; j++)
 		{
 			u8 pin = DIO_u8GetPinValue(second_it[j][0], second_it[j][1]);
 			if(pin == 0)
 			{
+				if(keyPressed) return 0;
+				keyPressed = 1;
 				val = matrix[i][j];
 				return val;
 			}
-			_delay_ms(20);
+			_delay_ms(2);
 		}
-		_delay_ms(20);
+		_delay_ms(2);
 	}
+	if(keyPressed)
+		keyPressed = 0;
 	/*DIO_voidSetPinValue(KEYPAD_ROW1_PORT, KEYPAD_ROW1_PIN, 1);
 	_delay_ms(50);
 	val = DIO_u8GetPinValue(KEYPAD_COL1_PORT, KEYPAD_COL1_PIN) == 1;*/
-	return val;
+	return 0;
 }
