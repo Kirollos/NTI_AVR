@@ -38,8 +38,10 @@
 #define KEYPAD_COL4_PORT		PortD
 #define KEYPAD_COL4_PIN			3
 
+// Proteus definitions
+
 #define KEYPAD_ROWS				4
-#define KEYPAD_COLUMNS			4//3
+#define KEYPAD_COLUMNS			3//4
 
 // Key definition
 #define KEYPAD_R1C1				'1'
@@ -61,6 +63,36 @@
 #define KEYPAD_R4C2				'0'//'E'
 #define KEYPAD_R4C3				'#'//'F'
 #define KEYPAD_R4C4				//'0'
+
+// ETA32 definitions
+
+/*
+
+#define KEYPAD_ROWS				4
+#define KEYPAD_COLUMNS			4
+
+// Key definition
+#define KEYPAD_R1C1				'1'
+#define KEYPAD_R1C2				'2'
+#define KEYPAD_R1C3				'3'
+#define KEYPAD_R1C4				'4'
+
+#define KEYPAD_R2C1				'5'
+#define KEYPAD_R2C2				'6'
+#define KEYPAD_R2C3				'7'
+#define KEYPAD_R2C4				'8'
+
+#define KEYPAD_R3C1				'9'
+#define KEYPAD_R3C2				'A'
+#define KEYPAD_R3C3				'B'
+#define KEYPAD_R3C4				'C'
+
+#define KEYPAD_R4C1				'*'
+#define KEYPAD_R4C2				'D'
+#define KEYPAD_R4C3				'E'
+#define KEYPAD_R4C4				'F'
+
+*/
 
 
 #endif /* KEYPAD_CONFIG_H_ */
