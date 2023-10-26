@@ -14,6 +14,8 @@
 #define F_CPU 16000000  // temp
 #include <util/delay.h> // temp
 
+static volatile u8 r=0, c=0;
+
 static void H_LCD_void_latchByte(u8 copy_u8Byte)
 {
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 0);
@@ -28,7 +30,7 @@ static void H_LCD_void_latchByte(u8 copy_u8Byte)
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 1);
 	_delay_ms(1);
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 0);
-	_delay_ms(10);
+	_delay_ms(5);
 	// lower 4 bits
 	DIO_voidSetPinValue(LCD_DATA_PORT, LCD_DATA_D7, GET_BIT(copy_u8Byte, 3));
 	DIO_voidSetPinValue(LCD_DATA_PORT, LCD_DATA_D6, GET_BIT(copy_u8Byte, 2));
@@ -38,7 +40,7 @@ static void H_LCD_void_latchByte(u8 copy_u8Byte)
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 1);
 	_delay_ms(1);
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 0);
-	_delay_ms(10);
+	_delay_ms(5);
 	#elif LCD_MODE == __8_BIT_MODE
 	DIO_voidSetPortValue(LCD_DATA_PORT, copy_u8Byte);
 	_delay_ms(1);
@@ -65,10 +67,10 @@ void H_LCD_void_Init(void)
 	
 	// Function set
 	H_LCD_void_sendCommand(LCD_FUNC_SET);
-	_delay_ms(5);
+	_delay_ms(1);
 	H_LCD_void_sendCommand(LCD_FUNC_SET);
-	_delay_ms(5);
-	H_LCD_void_sendCommand((LCD_LINES << 7) | (LCD_FONT << 6));
+	_delay_ms(1);
+	H_LCD_void_sendCommand(LCD_FUNC_SET | (LCD_MODE << 4) | (LCD_LINES << 3) | (LCD_FONT << 2));
 	
 	#elif LCD_MODE == __8_BIT_MODE
 
@@ -104,6 +106,13 @@ void H_LCD_void_sendData(u8 copy_u8data)
 	DIO_voidSetPinValue(LCD_RS_PORT, LCD_RS_PIN, 1);
 	_delay_ms(1);
 	H_LCD_void_latchByte(copy_u8data);
+	c++;
+	if(c%20 == 0)
+	{
+		c = 0;
+		r = (r+1) % 4;
+		H_LCD_void_gotoXY(r, 0);
+	}
 }
 
 void H_LCD_void_sendCommand(u8 copy_u8command)
@@ -126,13 +135,15 @@ void H_LCD_void_sendIntNum(s32 copy_s32Num)
 {
 	u8 szNumber[10];
 	sprintf(szNumber, "%d", copy_s32Num);
+	//strcpy(szNumber, itoa(copy_s32Num, 10));
 	H_LCD_void_sendString(szNumber);
 }
 
 void H_LCD_void_sendDouble(double copy_doubleNum)
 {
-	u8 szNumber[10];
+	u8 szNumber[20];
 	sprintf(szNumber, "%.2f", copy_doubleNum);
+	//strcpy(szNumber, ftoa(copy_doubleNum, 2));
 	H_LCD_void_sendString(szNumber);
 }
 
@@ -140,7 +151,9 @@ void H_LCD_void_gotoXY(u8 copy_u8Row,u8 copy_u8Col)
 {
 	// x ranges from 0 to LCD_COLUMNS
 	// y ranges from 0 to LCD_ROWS
-	//#if LCD_LINES == 2
+	r = copy_u8Row%4;
+	c = copy_u8Col%20;
+	#if LCD_LINES == __2_LINES
 	// Set DDRAM
 	switch(copy_u8Row)
 	{
@@ -157,9 +170,15 @@ void H_LCD_void_gotoXY(u8 copy_u8Row,u8 copy_u8Col)
 		H_LCD_void_sendCommand(LCD_SET_DDRAM_ADDR | (0x54 +copy_u8Col));
 		break;
 	}
-//	#else
-//	H_LCD_void_sendCommand(LCD_SET_DDRAM_ADDR | (20*copy_u8Row + copy_u8Col));
-//	#endif
+	#else
+	H_LCD_void_sendCommand(LCD_SET_DDRAM_ADDR | (20*copy_u8Row + copy_u8Col));
+	#endif
+}
+
+void H_LCD_void_getXY(u8* pRow, u8* pCol)
+{
+	*pRow = r;
+	*pCol = c;
 }
 
 void H_LCD_void_creatCustomChar(const u8 * ArrPattern,u8 copy_u8charCode)
@@ -185,4 +204,5 @@ void H_LCD_void_clearScreen(void)
 	H_LCD_void_sendCommand(LCD_CLEAR);
 	_delay_ms(2);
 	H_LCD_void_sendCommand(0x80);
+	r = c = 0;
 }
