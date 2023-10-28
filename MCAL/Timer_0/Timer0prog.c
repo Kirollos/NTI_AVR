@@ -102,7 +102,7 @@ void Timer0_setphaseCorrectPWM(u8 copyu8_frequency, double copydouble_duty)
 	}
 	else
 	{
-		TIMER0_OCR0 = 512 - f;	
+		TIMER0_OCR0 = 511 - f;	
 	}
 }
 
@@ -110,7 +110,8 @@ void Timer0_setphaseCorrectPWM(u8 copyu8_frequency, double copydouble_duty)
 void __vector_10 (void) __attribute__((signal));
 void __vector_10 (void)
 {
-	
+	if(Timer0_cbfn != 0)
+		(*Timer0_cbfn)();
 }
 
 // ISR OVF
