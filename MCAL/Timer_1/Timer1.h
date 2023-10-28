@@ -42,6 +42,12 @@ enum TIMER1_WGM
 	WGM_FAST_PWM_OCR1A
 };
 
+enum TIMER1_CMP_TYPE
+{
+	CMP_A,
+	CMP_B	
+};
+
 enum TIMER1_CMPM
 {
 	CMPM_NORMAL,
@@ -88,8 +94,8 @@ void Timer1_setDelayTimeMilliSec(u32 copy_u32TimeMS);
 void Timer1_EnableInt(enum TIMER1_INT_TYPE copyinttype);
 void Timer1_DisableInt(enum TIMER1_INT_TYPE copyinttype);
 void Timer1_setCallBack(void (*T1cbfn)());
-void Timer1_setFastPWM(u8 copyu8_frequency, double copydouble_duty);
-void Timer1_setphaseCorrectPWM(u8 copyu8_frequency, double copydouble_duty);
+void Timer1_setFastPWM(enum TIMER1_CMP_TYPE comparetype, u8 copyu8_frequency, double copydouble_duty);
+void Timer1_setphaseCorrectPWM(enum TIMER1_CMP_TYPE comparetype, u8 copyu8_frequency, double copydouble_duty);
 
 
 
