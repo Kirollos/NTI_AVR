@@ -13,6 +13,7 @@ u32 timer1_num_ovf = 0;
 u32 timer1_rem_counts = 0;
 
 static volatile void (*Timer1_cbfn)();
+static volatile void (*Timer1_capt_cbfn)();
 static u32 timeMS = 0;
 
 void Timer1_Init(Timer1_Parameters* pTimer1_params)
@@ -44,7 +45,7 @@ u32 Timer1_GetCounts()
 
 void Timer1_setDelayTimeMilliSec(u32 copy_u32TimeMS)
 {
-	if(MACRO_MODE == WGM_NORMAL) {
+	if(MACRO_MODE == TIMER1_WGM_NORMAL) {
 		// tick time (us) = prescaler/FCPU
 		// tick time (ms) = prescaler/FCPU   / 1000
 		// num of counts = delaytime (ms) / tick time (ms)
@@ -55,7 +56,7 @@ void Timer1_setDelayTimeMilliSec(u32 copy_u32TimeMS)
 		timer1_num_ovf = c / 0xFFFF;
 		timer1_rem_counts = c % 0xFFFF;
 	}
-	else if(MACRO_MODE == WGM_CTC_OCR1A)
+	else if(MACRO_MODE == TIMER1_WGM_CTC_OCR1A)
 	{
 		
 	}
@@ -73,7 +74,7 @@ void Timer1_DisableInt(enum TIMER1_INT_TYPE copyinttype)
 
 void Timer1_setCallBack(void (*T1cbfn)())
 {
-	Timer1_cbfn = T1cbfn;
+	Timer1_cbfn = T1cbfn;	
 }
 
 void Timer1_setFastPWM(enum TIMER1_CMP_TYPE comparetype, u8 copyu8_frequency, double copydouble_duty)
@@ -84,13 +85,13 @@ void Timer1_setFastPWM(enum TIMER1_CMP_TYPE comparetype, u8 copyu8_frequency, do
 	u16 topper = 0x00ff;
 	switch(MACRO_MODE)
 	{
-		case WGM_PWM_PHASE_CORRECT_8BIT:
+		case TIMER1_WGM_PWM_PHASE_CORRECT_8BIT:
 		topper = 0x0ff;
 		break;
-		case WGM_PWM_PHASE_CORRECT_9BIT:
+		case TIMER1_WGM_PWM_PHASE_CORRECT_9BIT:
 		topper = 0x1ff;
 		break;
-		case WGM_PWM_PHASE_CORRECT_10BIT:
+		case TIMER1_WGM_PWM_PHASE_CORRECT_10BIT:
 		topper = 0x3ff;
 		break;
 		default:
@@ -98,8 +99,8 @@ void Timer1_setFastPWM(enum TIMER1_CMP_TYPE comparetype, u8 copyu8_frequency, do
 		break;
 	}
 	double f = (copydouble_duty) * topper;
-	if(comparetype == CMP_A) {
-		if(((TIMER1_TCCR1A & 0b11000000)>> TCCR1A_CMPA_MATCH_OFFSET ) == CMPM_CLEAR)
+	if(comparetype == TIMER1_CMP_A) {
+		if(((TIMER1_TCCR1A & 0b11000000)>> TCCR1A_CMPA_MATCH_OFFSET ) == TIMER1_CMPM_CLEAR)
 		{
 			TIMER1_OCR1A = f;
 		}
@@ -108,8 +109,8 @@ void Timer1_setFastPWM(enum TIMER1_CMP_TYPE comparetype, u8 copyu8_frequency, do
 			TIMER1_OCR1A = topper - f;
 		}
 	}
-	else if(comparetype == CMP_B) {
-		if(((TIMER1_TCCR1A & 0b00110000)>> TCCR1A_CMPB_MATCH_OFFSET ) == CMPM_CLEAR)
+	else if(comparetype == TIMER1_CMP_B) {
+		if(((TIMER1_TCCR1A & 0b00110000)>> TCCR1A_CMPB_MATCH_OFFSET ) == TIMER1_CMPM_CLEAR)
 		{
 			TIMER1_OCR1B = f;
 		}
@@ -129,13 +130,13 @@ void Timer1_setphaseCorrectPWM(enum TIMER1_CMP_TYPE comparetype, u8 copyu8_frequ
 	u16 topper = 0x00ff;
 	switch(MACRO_MODE)
 	{
-		case WGM_PWM_PHASE_CORRECT_8BIT:
+		case TIMER1_WGM_PWM_PHASE_CORRECT_8BIT:
 		topper = 0x0ff;
 		break;
-		case WGM_PWM_PHASE_CORRECT_9BIT:
+		case TIMER1_WGM_PWM_PHASE_CORRECT_9BIT:
 		topper = 0x1ff;
 		break;
-		case WGM_PWM_PHASE_CORRECT_10BIT:
+		case TIMER1_WGM_PWM_PHASE_CORRECT_10BIT:
 		topper = 0x3ff;
 		break;
 		default:
@@ -143,7 +144,7 @@ void Timer1_setphaseCorrectPWM(enum TIMER1_CMP_TYPE comparetype, u8 copyu8_frequ
 		break;
 	}
 	double f = (copydouble_duty) * topper;
-	if(((TIMER1_TCCR1A & 0b11000000)>> TCCR1A_CMPA_MATCH_OFFSET ) == CMPM_CLEAR)
+	if(((TIMER1_TCCR1A & 0b11000000)>> TCCR1A_CMPA_MATCH_OFFSET ) == TIMER1_CMPM_CLEAR)
 	{
 		TIMER1_OCR1A = f;
 	}
@@ -152,7 +153,7 @@ void Timer1_setphaseCorrectPWM(enum TIMER1_CMP_TYPE comparetype, u8 copyu8_frequ
 		TIMER1_OCR1A = (topper+1)*2 - 1 - f;
 	}
 	
-	if(((TIMER1_TCCR1A & 0b00110000)>> TCCR1A_CMPB_MATCH_OFFSET ) == CMPM_CLEAR)
+	if(((TIMER1_TCCR1A & 0b00110000)>> TCCR1A_CMPB_MATCH_OFFSET ) == TIMER1_CMPM_CLEAR)
 	{
 		TIMER1_OCR1B = f;
 	}
@@ -160,6 +161,53 @@ void Timer1_setphaseCorrectPWM(enum TIMER1_CMP_TYPE comparetype, u8 copyu8_frequ
 	{
 		TIMER1_OCR1A = (topper+1)*2 - 1 - f;
 	}
+}
+
+void Timer1_ICU_setCallBack(void (*T1cbfn)())
+{
+	Timer1_capt_cbfn = T1cbfn;
+}
+
+void Timer1_ICU_setTrigger(enum TIMER1_ICES trigg)
+{
+	TIMER1_TCCR1B &= (1 << TCCR1B_ICES1_OFFSET);
+	TIMER1_TCCR1B |= (trigg << TCCR1B_ICES1_OFFSET);
+}
+
+u16 Timer1_ICU_takeReading()
+{
+	return TIMER1_ICR1;
+}
+
+void Timer1_MeasureFrequency(u16* pFreq)
+{
+	TIMER1_TIFR |= (1 << TIFR_ICF1);
+	u16 buff1 = TIMER1_ICR1;
+	while(TIMER1_TIFR & (1 << TIFR_ICF1));
+	u16 buff2 = TIMER1_ICR1;
+	u16 period = buff2 - buff1;
+	u16 freq = 1/period;
+	*pFreq = freq;
+}
+
+void Timer1_MeasureDuty(double* pDuty)
+{
+	TIMER1_TCCR1B |= (1 << TCCR1B_ICES1_OFFSET);
+	TIMER1_TIFR |= (1 << TIFR_ICF1);
+	while(TIMER1_TIFR & (1 << TIFR_ICF1) == 0);
+	u16 buff1 = TIMER1_ICR1;
+	TIMER1_TCCR1B &= ~(1 << TCCR1B_ICES1_OFFSET);
+	TIMER1_TIFR |= (1 << TIFR_ICF1);
+	while(TIMER1_TIFR & (1 << TIFR_ICF1) == 0);
+	u16 buff2 = TIMER1_ICR1;
+	TIMER1_TCCR1B |= (1 << TCCR1B_ICES1_OFFSET);
+	TIMER1_TIFR |= (1 << TIFR_ICF1);
+	while(TIMER1_TIFR & (1 << TIFR_ICF1) == 0);
+	u16 buff3 = TIMER1_ICR1;
+	u16 onperiod = buff2 - buff1;
+	u16 period = buff3 - buff1;
+	double duty = onperiod;
+	*pDuty = duty;
 }
 
 // ISR CMPA
@@ -182,20 +230,23 @@ void __vector_8 (void)
 void __vector_9 (void) __attribute__((signal));
 void __vector_9 (void)
 {
-	static u32 ovf_counter = 0;
+	if(Timer1_cbfn != 0)
+	(*Timer1_cbfn)();
+	/*static u32 ovf_counter = 0;
 	
 	if(++ovf_counter == timer1_num_ovf)
 	{
 		TIMER1_TCNT1 = 256 - timer1_rem_counts;
 		ovf_counter = 0;
 		// call callback here
-		(*Timer1_cbfn)();
-	}
+		//(*Timer1_cbfn)();
+	}*/
 }
 
 // ISR CAPT
 void __vector_6 (void) __attribute__((signal));
 void __vector_6 (void)
 {
-	
+	if(Timer1_capt_cbfn != 0)
+	(*Timer1_capt_cbfn)();
 }
