@@ -84,15 +84,25 @@ u8 UART_ReceiveByteSync()
 	#endif
 }
 
-void UART_ReceiveStringSync(u8* buff, u8 copyu8_length)
+void UART_ReceiveStringSync(u8* str, u8 copyu8_length)
 {
 	u8 counter = 0;
 	while(counter < (copyu8_length-1))
 	{
+		str[counter] = UART_ReceiveByteSync();
+		counter ++;
+	}
+	str[counter] = 0;
+}
+
+void UART_ReceiveBufferSync(u8* buff, u8 copyu8_length)
+{
+	u8 counter = 0;
+	while(counter < copyu8_length)
+	{
 		buff[counter] = UART_ReceiveByteSync();
 		counter ++;
 	}
-	buff[counter] = 0;
 }
 
 

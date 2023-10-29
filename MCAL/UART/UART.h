@@ -21,7 +21,8 @@ void UART_RXIntEnable();
 void UART_SendByteSync(u8 copyu8_Data);
 void UART_SendStringSync(const u8* data);
 u8 UART_ReceiveByteSync();
-void UART_ReceiveStringSync(u8* buff, u8 copyu8_length);
+void UART_ReceiveStringSync(u8* str, u8 copyu8_length);
+void UART_ReceiveBufferSync(u8* buff, u8 copyu8_length);
 
 //void UART_StartReceiveAsync(u8* buff, u8 copyu8_length);
 void UART_RXSetCallbackFunc(void (*cb)(u8));
