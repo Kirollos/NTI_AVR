@@ -29,7 +29,7 @@ void Timer1_Init(Timer1_Parameters* pTimer1_params)
 void Timer1_start(enum TIMER1_CLK_SEL clksel)
 {
 	TIMER1_TCCR1B &= ~TIMER1_TCCR1B_PRESCALER_MASK; // clear any previous clk sel
-	Timer1_setDelayTimeMilliSec(timeMS);
+	//Timer1_setDelayTimeMilliSec(timeMS);
 	TIMER1_TCCR1B |= clksel;
 };
 
@@ -170,7 +170,7 @@ void Timer1_ICU_setCallBack(void (*T1cbfn)())
 
 void Timer1_ICU_setTrigger(enum TIMER1_ICES trigg)
 {
-	TIMER1_TCCR1B &= (1 << TCCR1B_ICES1_OFFSET);
+	TIMER1_TCCR1B &= ~(1 << TCCR1B_ICES1_OFFSET);
 	TIMER1_TCCR1B |= (trigg << TCCR1B_ICES1_OFFSET);
 }
 
