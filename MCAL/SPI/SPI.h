@@ -57,7 +57,7 @@ enum SPI_INT_EN
 {
 	SPI_INT_DISABLE,
 	SPI_INT_ENABLE
-	};
+};
 
 typedef struct
 {
@@ -73,7 +73,7 @@ typedef struct
 
 void SPI_init(SPI_parameters* parameters);
 void SPI_transfer(u8 copy_u8ch, u8* pch);
-void SPI_send(u8 copy_u8ch);
+void SPI_AsyncSend(u8 copy_u8ch);
 void SPI_AsyncSetCallback(void (*spicb)(u8));
 
 

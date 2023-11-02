@@ -36,10 +36,9 @@ void SPI_transfer(u8 copy_u8ch, u8* pch)
 	*pch = SPI_SPDR;
 }
 
-void SPI_send(u8 copy_u8ch)
+void SPI_AsyncSend(u8 copy_u8ch)
 {
 	SPI_SPDR = copy_u8ch;
-	while(!((SPI_SPSR >> SPI_SPSR_SPIF) & 1));
 }
 
 void SPI_AsyncSetCallback(void (*spicb)(u8))
