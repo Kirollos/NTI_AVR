@@ -11,11 +11,11 @@
 
 static void (*RXC_cb)(u8);
 
-void UART_Init()
+void UART_Init(u16 copyu16_baudRate)
 {
 	u8 b = 0, c = 0;
-	UART_UBRRH = (UART_BAUD_VALUE&0xFF00) >> 8;
-	UART_UBRRL = (UART_BAUD_VALUE&0x00FF);
+	UART_UBRRH = (UART_BAUD_VALUE(copyu16_baudRate)&0xFF00) >> 8;
+	UART_UBRRL = (UART_BAUD_VALUE(copyu16_baudRate)&0x00FF);
 	#if UART_DATA_SIZE == 7
 	b |= (1 << UART_UCSRB_UCSZ2);
 	c |= (3 << UART_UCSRC_UCSZ0);

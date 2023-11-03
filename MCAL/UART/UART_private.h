@@ -36,7 +36,7 @@
 #define UART_UCSRA_RXC			7
 #define UART_UCSRA_UDRE			5
 
-#define UART_BAUD_VALUE		(((F_CPU)/(UART_BAUD_RATE*16UL))-1)
+#define UART_BAUD_VALUE(br)		(((F_CPU)/(br*16UL))-1)
 
 
 #define UART_SETREG(reg, value) do {\

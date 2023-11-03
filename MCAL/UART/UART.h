@@ -11,7 +11,7 @@
 
 #include "../../STD_TYPES.h"
 
-void UART_Init();
+void UART_Init(u16 copyu16_baudRate);
 void UART_TXEnable();
 void UART_TXDisable();
 void UART_RXEnable();
