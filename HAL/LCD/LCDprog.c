@@ -6,7 +6,7 @@
  */ 
 
 #include <stdio.h>
-#include "../../MCAL/PortInterface.h" // DIO
+#include "../../MCAL/DIO/PortInterface.h" // DIO
 #include "LCD_private.h"
 #include "LCD_config.h"
 #include "LCD.h"
@@ -19,7 +19,7 @@ static volatile u8 r=0, c=0;
 static void H_LCD_void_latchByte(u8 copy_u8Byte)
 {
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 0);
-	_delay_ms(1);
+	_delay_us(1);
 	
 	#if LCD_MODE == __4_BIT_MODE
 	// higher 4 bits
@@ -29,9 +29,9 @@ static void H_LCD_void_latchByte(u8 copy_u8Byte)
 	DIO_voidSetPinValue(LCD_DATA_PORT, LCD_DATA_D4, GET_BIT(copy_u8Byte, 4));
 	// enable pulse
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 1);
-	_delay_ms(1);
+	_delay_us(1);
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 0);
-	_delay_ms(5);
+	_delay_us(200);
 	// lower 4 bits
 	DIO_voidSetPinValue(LCD_DATA_PORT, LCD_DATA_D7, GET_BIT(copy_u8Byte, 3));
 	DIO_voidSetPinValue(LCD_DATA_PORT, LCD_DATA_D6, GET_BIT(copy_u8Byte, 2));
@@ -39,9 +39,9 @@ static void H_LCD_void_latchByte(u8 copy_u8Byte)
 	DIO_voidSetPinValue(LCD_DATA_PORT, LCD_DATA_D4, GET_BIT(copy_u8Byte, 0));
 	// enable pulse
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 1);
-	_delay_ms(1);
+	_delay_us(1);
 	DIO_voidSetPinValue(LCD_EN_PORT, LCD_EN_PIN, 0);
-	_delay_ms(5);
+	_delay_ms(2);
 	
 	
 	#elif LCD_MODE == __8_BIT_MODE
@@ -70,11 +70,11 @@ void H_LCD_void_Init(void)
 	
 	// Function set
 	H_LCD_void_sendCommand(LCD_FUNC_SET);
-	_delay_ms(1);
+	_delay_us(39);
 	H_LCD_void_sendCommand(LCD_FUNC_SET);
-	_delay_ms(1);
+	_delay_us(39);
 	H_LCD_void_sendCommand(LCD_FUNC_SET | (LCD_MODE << 4) | (LCD_LINES << 3) | (LCD_FONT << 2));
-	
+	_delay_us(39);
 	#elif LCD_MODE == __8_BIT_MODE
 
 	DIO_voidSetPinDirection(LCD_DATA_PORT, LCD_DATA_D0, 1);
@@ -95,8 +95,11 @@ void H_LCD_void_Init(void)
 	
 	// Display on-off
 	H_LCD_void_sendCommand(LCD_DISP_ONOFF | (LCD_DISPLAY << 2) | (LCD_CURSOR << 1) | (LCD_CURS_BLINK << 0));
+	_delay_us(39);
 	// Display clear
 	H_LCD_void_sendCommand(LCD_CLEAR);
+	_delay_ms(1);
+	_delay_us(530);
 	// Entry mode
 	H_LCD_void_sendCommand(LCD_ENT_MODE | (LCD_ENTRY << 1) | (LCD_DISP_SHIFT << 0));
 	// End.
@@ -107,7 +110,7 @@ void H_LCD_void_Init(void)
 void H_LCD_void_sendData(u8 copy_u8data)
 {
 	DIO_voidSetPinValue(LCD_RS_PORT, LCD_RS_PIN, 1);
-	_delay_ms(1);
+	//_delay_ms(1);
 	H_LCD_void_latchByte(copy_u8data);
 	c++;
 	if(c%20 == 0)
@@ -121,7 +124,7 @@ void H_LCD_void_sendData(u8 copy_u8data)
 void H_LCD_void_sendCommand(u8 copy_u8command)
 {
 	DIO_voidSetPinValue(LCD_RS_PORT, LCD_RS_PIN, 0);
-	_delay_ms(1);
+	//_delay_ms(1);
 	H_LCD_void_latchByte(copy_u8command);
 }
 
@@ -205,7 +208,7 @@ void H_LCD_void_displayCustomChar(u8 copy_u8charCode)
 void H_LCD_void_clearScreen(void)
 {
 	H_LCD_void_sendCommand(LCD_CLEAR);
-	_delay_ms(2);
+	//_delay_ms(2);
 	H_LCD_void_sendCommand(0x80);
 	r = c = 0;
 }
