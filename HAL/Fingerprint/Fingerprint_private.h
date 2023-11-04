@@ -11,6 +11,7 @@
 
 
 #define FP_BAUDRATE		57600
+//#define FP_BAUDRATE		9600
 
 
 #endif /* FINGERPRINT_PRIVATE_H_ */
