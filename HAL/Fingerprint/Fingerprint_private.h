@@ -10,8 +10,8 @@
 #define FINGERPRINT_PRIVATE_H_
 
 
-//#define FP_BAUDRATE		57600
-#define FP_BAUDRATE		9600
+#define FP_BAUDRATE		57600
+//#define FP_BAUDRATE		9600
 
 // Instruction codes
 #define FP_CMD_GenImg			0x01

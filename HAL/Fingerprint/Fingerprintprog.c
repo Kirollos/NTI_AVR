@@ -35,7 +35,7 @@ typedef struct
 
 static const u16 Frame_Header = 0xEF01;
 
-#define MAX_BUFF_SIZE	64
+#define MAX_BUFF_SIZE	1024
 
 volatile u8 buff[MAX_BUFF_SIZE];
 volatile u8 buff_idx = 0;
@@ -70,38 +70,41 @@ static void sendFrame(FP_Frame* outgoing_frame)
 	UART_SendByteSync((chksum & 0xFF00) >> 8);			// Higher byte
 	UART_SendByteSync((chksum & 0x00FF));				// Lower byte
 }
+#include "../LCD/LCD.h"
 
-static u8 receiveFrame(u8* buff, FP_Frame* pframe) // 1 - checksum success
+static u8 receiveFrame(u8* pbuff, FP_Frame* pframe) // 1 - checksum success
 {
 	while(buff_len < 9);
-	pframe->u16_Header = (buff[0] << 8) | buff[1];
-	pframe->u32_Address = (buff[2] << 24) | (buff[3] << 16) | (buff[4] << 8) | buff[5];
-	pframe->u8_PID = buff[6];
-	pframe->u16_dataLen = (buff[7] << 8) | buff[8];
+	pframe->u16_Header = (pbuff[0] << 8) | pbuff[1];
+	pframe->u32_Address = (pbuff[2] << 24) | (pbuff[3] << 16) | (pbuff[4] << 8) | pbuff[5];
+	pframe->u8_PID = pbuff[6];
+	pframe->u16_dataLen = (pbuff[7] << 8) | pbuff[8];
 	u16 chksum = pframe->u8_PID + pframe->u16_dataLen;
 	u8 i;
 	while(buff_len < 9+pframe->u16_dataLen);
 	for(i = 0; i < pframe->u16_dataLen-2; i++)
 	{
-		pframe->pu8_data[i] = buff[9+i];
-		chksum += buff[9+i];
+		pframe->pu8_data[i] = pbuff[9+i];
+		chksum += pbuff[9+i];
 	}
-	pframe->u16_checksum = buff[9+(i++)];
+	pframe->u16_checksum = pbuff[9+(i++)];
 	pframe->u16_checksum <<= 8;
-	pframe->u16_checksum |= buff[9+i];
+	pframe->u16_checksum |= pbuff[9+i];
 	// Clean the buffer
 	buff_len = 0;
-	for(u8 x = 0; x <= 9+i; x++)
+	//for(u8 x = 0; x <= 9+i; x++)
+	for(u8 x = 0; x < 2; x++)
 	{
-		buff[x] = 0;
+		pbuff[x] = 0;
 	}
+	buff_ptr=buff_idx=0;
 	return chksum == pframe->u16_checksum;
 }
 
 static u8* getnextByte(void)
 {
 	u8* pch = buff+buff_ptr;
-	buff_ptr = (buff_ptr+1)%MAX_BUFF_SIZE;
+	//buff_ptr = (buff_ptr+1)%MAX_BUFF_SIZE;
 	return pch;
 }
 
@@ -111,7 +114,7 @@ static u8 scanFrameHeader(void)
 	{
 		if(buff[i] == (Frame_Header>>8) && buff[(i+1)%MAX_BUFF_SIZE])
 		{
-			buff_ptr = i;
+			//buff_ptr = i;
 			return 1;
 		}
 	}
@@ -248,11 +251,15 @@ FP_STATUS H_FingerPS_strTemplate(u8 copyu8_bufferID, u16 copyu16_pageID)
 	FP_Frame tx_frame, rx_frame;
 	constructFrame(PacketID_CMD, data, sizeof(data), &tx_frame);
 	sendFrame(&tx_frame);
+	H_LCD_void_sendString("a");
 	_delay_ms(100); // Wait for response to build up
 	u8 checksum = -1;
 	while(scanFrameHeader() == 0);
+	H_LCD_void_sendString("b");
 	u8* p = getnextByte();
+	H_LCD_void_sendString("c");
 	checksum = receiveFrame(p, &rx_frame);
+	H_LCD_void_sendString("d");
 	if(!checksum)
 	{
 		// FAIL
