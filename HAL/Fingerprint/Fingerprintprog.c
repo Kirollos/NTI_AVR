@@ -35,7 +35,7 @@ typedef struct
 
 static const u16 Frame_Header = 0xEF01;
 
-#define MAX_BUFF_SIZE	1024
+#define MAX_BUFF_SIZE	32
 
 volatile u8 buff[MAX_BUFF_SIZE];
 volatile u8 buff_idx = 0;
@@ -147,7 +147,6 @@ void H_FingerPS_init()
 FP_STATUS H_FingerPS_handShake()
 {
 	u8 data[] = {FP_CMD_HandShake};
-	//fp_frame hsframe = {frame_header, 0xffffffff, packetid_cmd, 0x0003, data};
 	FP_Frame tx_frame, rx_frame;
 	constructFrame(PacketID_CMD, data, sizeof(data), &tx_frame);
 	sendFrame(&tx_frame);
@@ -167,7 +166,6 @@ FP_STATUS H_FingerPS_handShake()
 FP_STATUS H_FingerPS_AuraControl(enum FP_Aura_Control copyu8_CtrlCode, u8 copyu8_Speed, enum FP_Aura_Color copyu8_ColorIndex, u8 copyu8_Timing)
 {
 	u8 data[] = {FP_CMD_AuraControl, copyu8_CtrlCode, copyu8_Speed, copyu8_ColorIndex, copyu8_Timing};
-	//FP_Frame hsframe = {Frame_Header, 0xFFFFFFFF, PacketID_CMD, 0x0007, data};
 	FP_Frame tx_frame, rx_frame;
 	constructFrame(PacketID_CMD, data, sizeof(data), &tx_frame);
 	sendFrame(&tx_frame);
@@ -187,7 +185,6 @@ FP_STATUS H_FingerPS_AuraControl(enum FP_Aura_Control copyu8_CtrlCode, u8 copyu8
 FP_STATUS H_FingerPS_genImg()
 {
 	u8 data[] = {FP_CMD_GenImg};
-	//FP_Frame hsframe = {Frame_Header, 0xFFFFFFFF, PacketID_CMD, 0x0003, data};
 	FP_Frame tx_frame, rx_frame;
 	constructFrame(PacketID_CMD, data, sizeof(data), &tx_frame);
 	sendFrame(&tx_frame);
@@ -207,7 +204,6 @@ FP_STATUS H_FingerPS_genImg()
 FP_STATUS H_FingerPS_convertImg2CharFile(u8 copyu8_bufferID)
 {
 	u8 data[] = {FP_CMD_Img2Tz, copyu8_bufferID};
-	//FP_Frame hsframe = {Frame_Header, 0xFFFFFFFF, PacketID_CMD, 0x0004, data};
 	FP_Frame tx_frame, rx_frame;
 	constructFrame(PacketID_CMD, data, sizeof(data), &tx_frame);
 	sendFrame(&tx_frame);
@@ -227,7 +223,6 @@ FP_STATUS H_FingerPS_convertImg2CharFile(u8 copyu8_bufferID)
 FP_STATUS H_FingerPS_genTemplate()
 {
 	u8 data[] = {FP_CMD_RegModel};
-	//FP_Frame hsframe = {Frame_Header, 0xFFFFFFFF, PacketID_CMD, 0x0003, data};
 	FP_Frame tx_frame, rx_frame;
 	constructFrame(PacketID_CMD, data, sizeof(data), &tx_frame);
 	sendFrame(&tx_frame);
@@ -247,19 +242,14 @@ FP_STATUS H_FingerPS_genTemplate()
 FP_STATUS H_FingerPS_strTemplate(u8 copyu8_bufferID, u16 copyu16_pageID)
 {
 	u8 data[] = {FP_CMD_Store, copyu8_bufferID, (copyu16_pageID>>8), (copyu16_pageID&0xFF)};
-	//FP_Frame hsframe = {Frame_Header, 0xFFFFFFFF, PacketID_CMD, 0x0003, data};
 	FP_Frame tx_frame, rx_frame;
 	constructFrame(PacketID_CMD, data, sizeof(data), &tx_frame);
 	sendFrame(&tx_frame);
-	H_LCD_void_sendString("a");
 	_delay_ms(100); // Wait for response to build up
 	u8 checksum = -1;
 	while(scanFrameHeader() == 0);
-	H_LCD_void_sendString("b");
 	u8* p = getnextByte();
-	H_LCD_void_sendString("c");
 	checksum = receiveFrame(p, &rx_frame);
-	H_LCD_void_sendString("d");
 	if(!checksum)
 	{
 		// FAIL
@@ -271,7 +261,6 @@ FP_STATUS H_FingerPS_strTemplate(u8 copyu8_bufferID, u16 copyu16_pageID)
 FP_STATUS H_FingerPS_searchFinger(u8 copyu8_bufferID, u16 copyu16_startPage, u16 copyu16_pageNum, u16* pPageID, u16* pMatchScore)
 {
 	u8 data[] = {FP_CMD_Search, copyu8_bufferID, (copyu16_startPage>>8), (copyu16_startPage&0xFF), (copyu16_pageNum>>8), (copyu16_pageNum&0xFF)};
-	//FP_Frame hsframe = {Frame_Header, 0xFFFFFFFF, PacketID_CMD, 0x0003, data};
 	FP_Frame tx_frame, rx_frame;
 	constructFrame(PacketID_CMD, data, sizeof(data), &tx_frame);
 	sendFrame(&tx_frame);
@@ -296,7 +285,6 @@ FP_STATUS H_FingerPS_searchFinger(u8 copyu8_bufferID, u16 copyu16_startPage, u16
 FP_STATUS H_FingerPS_emptyLibrary()
 {
 	u8 data[] = {FP_CMD_Empty};
-	//FP_Frame hsframe = {Frame_Header, 0xFFFFFFFF, PacketID_CMD, 0x0003, data};
 	FP_Frame tx_frame, rx_frame;
 	constructFrame(PacketID_CMD, data, sizeof(data), &tx_frame);
 	sendFrame(&tx_frame);
@@ -316,7 +304,6 @@ FP_STATUS H_FingerPS_emptyLibrary()
 FP_STATUS H_FingerPS_deleteFinger(u16 copyu16_pageID, u16 copyu16_nTemplates)
 {
 	u8 data[] = {FP_CMD_DeleteChar, (copyu16_pageID>>8), (copyu16_pageID&0xFF), (copyu16_nTemplates>>8), (copyu16_nTemplates&0xFF)};
-	//FP_Frame hsframe = {Frame_Header, 0xFFFFFFFF, PacketID_CMD, 0x0003, data};
 	FP_Frame tx_frame, rx_frame;
 	constructFrame(PacketID_CMD, data, sizeof(data), &tx_frame);
 	sendFrame(&tx_frame);
@@ -336,7 +323,6 @@ FP_STATUS H_FingerPS_deleteFinger(u16 copyu16_pageID, u16 copyu16_nTemplates)
 FP_STATUS H_FingerPS_LoadCharFile(u8 copyu8_bufferID, u16 copyu16_pageID)
 {
 	u8 data[] = {FP_CMD_LoadChar, copyu8_bufferID, (copyu16_pageID>>8), (copyu16_pageID&0xFF)};
-	//FP_Frame hsframe = {Frame_Header, 0xFFFFFFFF, PacketID_CMD, 0x0003, data};
 	FP_Frame tx_frame, rx_frame;
 	constructFrame(PacketID_CMD, data, sizeof(data), &tx_frame);
 	sendFrame(&tx_frame);
@@ -353,10 +339,9 @@ FP_STATUS H_FingerPS_LoadCharFile(u8 copyu8_bufferID, u16 copyu16_pageID)
 	return rx_frame.pu8_data[0];
 }
 
-FP_STATUS FingerPS_match(u16* pMatchScore)
+FP_STATUS H_FingerPS_match(u16* pMatchScore)
 {
 	u8 data[] = {FP_CMD_Match};
-	//FP_Frame hsframe = {Frame_Header, 0xFFFFFFFF, PacketID_CMD, 0x0003, data};
 	FP_Frame tx_frame, rx_frame;
 	constructFrame(PacketID_CMD, data, sizeof(data), &tx_frame);
 	sendFrame(&tx_frame);
@@ -373,6 +358,29 @@ FP_STATUS FingerPS_match(u16* pMatchScore)
 	if(rx_frame.pu8_data[0] == FP_STATUS_OK)
 	{
 		*pMatchScore = (rx_frame.pu8_data[1] << 8) | (rx_frame.pu8_data[2]);
+	}
+	return rx_frame.pu8_data[0];
+}
+
+FP_STATUS H_FingerPs_getNTemplates(u16* pNTemplates)
+{
+	u8 data[] = {FP_CMD_TemplateNum};
+	FP_Frame tx_frame, rx_frame;
+	constructFrame(PacketID_CMD, data, sizeof(data), &tx_frame);
+	sendFrame(&tx_frame);
+	_delay_ms(100); // Wait for response to build up
+	u8 checksum = -1;
+	while(scanFrameHeader() == 0);
+	u8* p = getnextByte();
+	checksum = receiveFrame(p, &rx_frame);
+	if(!checksum)
+	{
+		// FAIL
+		return FP_STATUS_CHECKSUM_FAIL;
+	}
+	if(rx_frame.pu8_data[0] == FP_STATUS_OK)
+	{
+		*pNTemplates = (rx_frame.pu8_data[1] << 8) | (rx_frame.pu8_data[2]);
 	}
 	return rx_frame.pu8_data[0];
 }

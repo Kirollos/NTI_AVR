@@ -68,7 +68,8 @@ FP_STATUS H_FingerPS_searchFinger(u8 copyu8_bufferID, u16 copyu16_startPage, u16
 FP_STATUS H_FingerPS_emptyLibrary();
 FP_STATUS H_FingerPS_deleteFinger(u16 copyu16_pageID, u16 copyu16_nTemplates);
 FP_STATUS H_FingerPS_LoadCharFile(u8 copyu8_bufferID, u16 copyu16_pageID);
-FP_STATUS FingerPS_match(u16* pMatchScore);
+FP_STATUS H_FingerPS_match(u16* pMatchScore);
+FP_STATUS H_FingerPs_getNTemplates(u16* pNTemplates);
 
 
 
