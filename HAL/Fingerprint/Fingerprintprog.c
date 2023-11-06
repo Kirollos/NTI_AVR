@@ -15,34 +15,12 @@
 #define F_CPU		16000000
 #include <util/delay.h>
 
-enum PacketID
-{
-	PacketID_CMD = 0x01,
-	PacketID_DATA = 0x02,
-	PacketID_ACK = 0x07,
-	PacketID_END = 0x08
-};
-
-typedef struct  
-{
-	u16 u16_Header;
-	u32 u32_Address;
-	enum PacketID u8_PID;
-	u16 u16_dataLen;
-	u8* pu8_data;
-	u16 u16_checksum;
-} FP_Frame;
-
-static const u16 Frame_Header = 0xEF01;
-
-#define MAX_BUFF_SIZE	32
 
 volatile u8 buff[MAX_BUFF_SIZE];
-volatile u8 buff_idx = 0;
-u8 buff_ptr = 0;
-volatile u8 buff_len = 0;
+static volatile u8 buff_idx = 0;
+static u8 buff_ptr = 0;
+static volatile u8 buff_len = 0;
 
-//static void sendFrame(u32 copyu32_addr, enum PacketID copyu8_pid, u16 copyu16_datalen, u8* pdata)
 static void sendFrame(FP_Frame* outgoing_frame)
 {
 	u16 chksum = outgoing_frame->u8_PID + outgoing_frame->u16_dataLen;
@@ -70,18 +48,17 @@ static void sendFrame(FP_Frame* outgoing_frame)
 	UART_SendByteSync((chksum & 0xFF00) >> 8);			// Higher byte
 	UART_SendByteSync((chksum & 0x00FF));				// Lower byte
 }
-#include "../LCD/LCD.h"
 
 static u8 receiveFrame(u8* pbuff, FP_Frame* pframe) // 1 - checksum success
 {
-	while(buff_len < 9);
+	while(buff_len < 9); /* wait for the first part of the frame to complete (till dataLen) */
 	pframe->u16_Header = (pbuff[0] << 8) | pbuff[1];
 	pframe->u32_Address = (pbuff[2] << 24) | (pbuff[3] << 16) | (pbuff[4] << 8) | pbuff[5];
 	pframe->u8_PID = pbuff[6];
 	pframe->u16_dataLen = (pbuff[7] << 8) | pbuff[8];
 	u16 chksum = pframe->u8_PID + pframe->u16_dataLen;
 	u8 i;
-	while(buff_len < 9+pframe->u16_dataLen);
+	while(buff_len < 9+pframe->u16_dataLen); /* wait for the rest of the frame to complete*/
 	for(i = 0; i < pframe->u16_dataLen-2; i++)
 	{
 		pframe->pu8_data[i] = pbuff[9+i];

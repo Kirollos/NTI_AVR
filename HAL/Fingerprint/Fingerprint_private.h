@@ -9,6 +9,7 @@
 #ifndef FINGERPRINT_PRIVATE_H_
 #define FINGERPRINT_PRIVATE_H_
 
+#include "../../STD_TYPES.h"
 
 #define FP_BAUDRATE		57600
 //#define FP_BAUDRATE		9600
@@ -48,6 +49,29 @@
 #define FP_CMD_ReadProdInfo		0x3C
 #define FP_CMD_SoftRst			0x3D
 #define FP_CMD_HandShake		0x40
+
+
+enum PacketID
+{
+	PacketID_CMD = 0x01,
+	PacketID_DATA = 0x02,
+	PacketID_ACK = 0x07,
+	PacketID_END = 0x08
+};
+
+typedef struct
+{
+	u16 u16_Header;
+	u32 u32_Address;
+	enum PacketID u8_PID;
+	u16 u16_dataLen;
+	u8* pu8_data;
+	u16 u16_checksum;
+} FP_Frame;
+
+static const u16 Frame_Header = 0xEF01;
+
+#define MAX_BUFF_SIZE	32
 
 
 #endif /* FINGERPRINT_PRIVATE_H_ */
