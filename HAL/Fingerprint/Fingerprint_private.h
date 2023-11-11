@@ -59,13 +59,15 @@ enum PacketID
 	PacketID_END = 0x08
 };
 
+#define FDATA_MAXLEN	30
+
 typedef struct
 {
 	u16 u16_Header;
 	u32 u32_Address;
 	enum PacketID u8_PID;
 	u16 u16_dataLen;
-	u8* pu8_data;
+	u8 pu8_data[FDATA_MAXLEN];
 	u16 u16_checksum;
 } FP_Frame;
 

@@ -100,7 +100,8 @@ static u8 scanFrameHeader(void)
 
 static void constructFrame(enum PacketID pid, const u8* data, const u8 data_len, const FP_Frame* frame)
 {
-	FP_Frame tmpf = {Frame_Header, 0xFFFFFFFF, pid, data_len + 2, (u8*) data};
+	FP_Frame tmpf = {Frame_Header, 0xFFFFFFFF, pid, data_len + 2/*, (u8*) data*/};
+	memcpy((u8*) tmpf.pu8_data, data, data_len);
 	memcpy((u8*) frame, &tmpf, sizeof(FP_Frame));
 }
 
